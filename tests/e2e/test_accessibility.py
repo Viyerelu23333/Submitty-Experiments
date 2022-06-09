@@ -126,7 +126,8 @@ class TestAccessibility(BaseTestCase):
                                 "type": error['type'].strip()
                             }
                             foundErrors.append(clean_error)
-
+                    if foundErrors is not []:
+                        print(self.driver.page_source)
                     msg = f"\n{json.dumps(foundErrors, indent=4, sort_keys=True)}\nMore info can be found by using the w3 html validator. You can read more about it on submitty.org:\nhttps://validator.w3.org/#validate_by_input\nhttps://submitty.org/developer/interface_design_style_guide/web_accessibility#html-css-and-javascript"
                     self.assertFalse(foundErrors != [], msg=msg)
 
