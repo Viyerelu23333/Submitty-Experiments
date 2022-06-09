@@ -1293,7 +1293,8 @@ CREATE TABLE public.polls (
     release_date date NOT NULL,
     image_path text,
     question_type character varying(35) DEFAULT 'single-response-multiple-correct'::character varying,
-    release_histogram character varying(10) DEFAULT 'never'::character varying
+    release_histogram character varying(10) DEFAULT 'never'::character varying,
+    show_correct_answer character varying(10) DEFAULT 'never'::character varying
 );
 
 
