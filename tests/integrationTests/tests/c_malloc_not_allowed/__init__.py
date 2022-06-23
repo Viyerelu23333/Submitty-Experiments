@@ -57,7 +57,7 @@ def malloc(test):
     test.run_compile()
     test.run_run()
     test.run_validator()
-    test.diff("grade.txt", "grade.txt.malloc", "-b")
+    test.diff("grade.txt", "grade.malloc.txt", "-b")
     subprocess.call(["rm", os.path.join(test.testcase_path, "data", "malloc.c")])
     test.json_diff("results.json", "results.malloc.json")
 
@@ -91,7 +91,7 @@ def bracket(test):
 
 
 @testcase
-def does_not_compile(test):
+def compile_err(test):
     cleanup(test)
     subprocess.call(["cp",
                      os.path.join(SAMPLE_SUBMISSIONS, "compile_err.c"),
