@@ -54,8 +54,8 @@ TUTORIAL_DIR = os.path.join(SUBMITTY_INSTALL_DIR, "GIT_CHECKOUT/Tutorial", "exam
 
 DB_HOST = "localhost"
 DB_PORT = 5432
-DB_USER = ""
-DB_PASS = ""
+DB_USER = "submitty_dbuser"
+DB_PASS = "submitty_dbuser"
 
 DB_ONLY = False
 NO_SUBMISSIONS = False
@@ -95,7 +95,6 @@ def main():
     with open(os.path.join(SUBMITTY_INSTALL_DIR, "config", "database.json")) as database_config:
         database_config_json = json.load(database_config)
         DB_USER = database_config_json["database_user"]
-        if "database_port" in database_config_json and database_config_json["database_port"]
         DB_HOST = database_config_json["database_host"]
         DB_PORT = database_config_json["database_port"]
         DB_PASS = database_config_json["database_password"]
@@ -157,7 +156,8 @@ def main():
         extra_students = max(tmp, extra_students)
     extra_students = generate_random_users(extra_students, users)
 
-    submitty_engine = create_engine("postgresql://{}:{}@{}:{}/submitty".format(DB_USER, DB_PASS, DB_HOST, DB_PORT))
+    submitty_engine = create_engine("postgresql:///submitty?host={}&port={}&user={}&password={}"
+                                    .format(DB_HOST, DB_PORT, DB_USER, DB_PASS))
     submitty_conn = submitty_engine.connect()
     submitty_metadata = MetaData(bind=submitty_engine)
     user_table = Table('users', submitty_metadata, autoload=True)
@@ -258,7 +258,7 @@ def main():
 
     if not NO_GRADING:
         # queue up all of the newly created submissions to grade!
-        os.system("f{SUBMITTY_INSTALL_DIR}/bin/regrade.py --no_input {SUBMITTY_DATA_DIR}/courses/")
+        os.system(f"{SUBMITTY_INSTALL_DIR}/bin/regrade.py --no_input {SUBMITTY_DATA_DIR}/courses/")
 
 
 def get_random_text_from_file(filename):
@@ -796,12 +796,14 @@ class Course(object):
         database = "submitty_" + self.semester + "_" + self.code
         print("Database created, now populating ", end="")
 
-        submitty_engine = create_engine("postgresql://{}:{}@{}:{}/submitty".format(DB_USER, DB_PASS, DB_HOST, DB_PORT))
+        submitty_engine = create_engine("postgresql:///submitty?host={}&port={}&user={}&password={}"
+                                        .format(DB_HOST, DB_PORT, DB_USER, DB_PASS))
         submitty_conn = submitty_engine.connect()
         submitty_metadata = MetaData(bind=submitty_engine)
         print("(Master DB connection made, metadata bound)...")
 
-        engine = create_engine("postgresql://{}:{}@{}:{}/{}".format(DB_USER, DB_PASS, DB_HOST, DB_PORT, database))
+        engine = create_engine("postgresql:///{}?host={}&port={}&user={}&password={}"
+                               .format(database, DB_HOST, DB_PORT, DB_USER, DB_PASS))
         self.conn = engine.connect()
         self.metadata = MetaData(bind=engine)
         print("(Course DB connection made, metadata bound)...")
