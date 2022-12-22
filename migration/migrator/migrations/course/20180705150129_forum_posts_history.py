@@ -11,3 +11,5 @@ def up(config, database, semester, course):
     database.execute('ALTER TABLE "forum_posts_history" ADD CONSTRAINT "forum_posts_history_edit_author_fk" FOREIGN KEY ("edit_author") REFERENCES "users"("user_id")')
     database.execute('CREATE INDEX IF NOT EXISTS "forum_posts_history_post_id_index" ON "forum_posts_history" ("post_id")')
     database.execute('CREATE INDEX IF NOT EXISTS "forum_posts_history_edit_timestamp_index" ON "forum_posts_history" ("edit_timestamp" DESC)')
+
+    
